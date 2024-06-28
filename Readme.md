@@ -1,0 +1,1 @@
+# Repository with relevant files for the generic templates as it is on the [commit](https://github.com/OpenZeppelin/polkadot-runtime-templates/commit/bb0cfdfdfd39cddd129db17f0fb83fbf7f754dfd) after the first audit of the generic templates
