@@ -20,8 +20,31 @@ mod constant_tests {
 
 mod runtime_tests {
     use frame_support::{pallet_prelude::Weight, traits::TypedGet, PalletId};
-    use parachain_template_runtime::{constants::currency::*, *};
+    use parachain_template_runtime::{
+        configs::*,
+        constants::{currency::*, *},
+        *,
+    };
+    use sp_runtime::create_runtime_str;
+    use sp_version::RuntimeVersion;
     use xcm::latest::prelude::BodyId;
+
+    #[test]
+    fn check_runtime_api_version() {
+        assert_eq!(
+            VERSION,
+            RuntimeVersion {
+                spec_name: create_runtime_str!("template-parachain"),
+                impl_name: create_runtime_str!("template-parachain"),
+                authoring_version: 1,
+                spec_version: 1,
+                impl_version: 0,
+                apis: parachain_template_runtime::apis::RUNTIME_API_VERSIONS,
+                transaction_version: 1,
+                state_version: 1,
+            }
+        );
+    }
 
     #[test]
     fn weight_to_fee_constants() {
@@ -34,6 +57,7 @@ mod runtime_tests {
 
     #[test]
     fn frame_system_constants() {
+        #[cfg(not(feature = "async-backing"))]
         assert_eq!(
             MAXIMUM_BLOCK_WEIGHT,
             Weight::from_parts(
@@ -42,17 +66,31 @@ mod runtime_tests {
             )
         );
 
+        #[cfg(feature = "async-backing")]
+        assert_eq!(
+            MAXIMUM_BLOCK_WEIGHT,
+            Weight::from_parts(
+                frame_support::weights::constants::WEIGHT_REF_TIME_PER_SECOND.saturating_mul(2),
+                cumulus_primitives_core::relay_chain::MAX_POV_SIZE as u64
+            )
+        );
+
         assert_eq!(AVERAGE_ON_INITIALIZE_RATIO, Perbill::from_percent(5));
 
         assert_eq!(NORMAL_DISPATCH_RATIO, Perbill::from_percent(75));
-
+        #[cfg(not(feature = "async-backing"))]
         assert_eq!(UNINCLUDED_SEGMENT_CAPACITY, 1);
+        #[cfg(feature = "async-backing")]
+        assert_eq!(UNINCLUDED_SEGMENT_CAPACITY, 3);
 
         assert_eq!(BLOCK_PROCESSING_VELOCITY, 1);
 
         assert_eq!(RELAY_CHAIN_SLOT_DURATION_MILLIS, 6000);
 
+        #[cfg(not(feature = "async-backing"))]
         assert_eq!(MILLISECS_PER_BLOCK, 12000);
+        #[cfg(feature = "async-backing")]
+        assert_eq!(MILLISECS_PER_BLOCK, 6000);
 
         assert_eq!(SLOT_DURATION, MILLISECS_PER_BLOCK);
 
@@ -154,7 +192,10 @@ mod runtime_tests {
     #[test]
     #[allow(clippy::assertions_on_constants)]
     fn aura_constants() {
+        #[cfg(not(feature = "async-backing"))]
         assert!(!AllowMultipleBlocksPerSlot::get());
+        #[cfg(feature = "async-backing")]
+        assert!(AllowMultipleBlocksPerSlot::get());
 
         assert_eq!(MaxAuthorities::get(), 100_000);
     }
@@ -181,7 +222,7 @@ mod runtime_tests {
 
 mod xcm_tests {
     use frame_support::weights::Weight;
-    use parachain_template_runtime::xcm_config::*;
+    use parachain_template_runtime::configs::xcm_config::*;
 
     #[test]
     fn xcm_executor_constants() {

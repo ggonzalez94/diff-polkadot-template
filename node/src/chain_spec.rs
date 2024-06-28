@@ -71,6 +71,8 @@ pub fn development_config() -> ChainSpec {
     properties.insert("tokenSymbol".into(), "UNIT".into());
     properties.insert("tokenDecimals".into(), 12.into());
     properties.insert("ss58Format".into(), 42.into());
+    // This is very important for us, it lets us track the usage of our templates, and have no downside for the node/runtime. Please do not remove :)
+    properties.insert("basedOn".into(), "OpenZeppelin Generic Template".into());
 
     ChainSpec::builder(
         parachain_template_runtime::WASM_BINARY
@@ -199,6 +201,7 @@ fn testnet_genesis(
                 })
             .collect::<Vec<_>>(),
         },
+        "treasury": {},
         "polkadotXcm": {
             "safeXcmVersion": Some(SAFE_XCM_VERSION),
         },

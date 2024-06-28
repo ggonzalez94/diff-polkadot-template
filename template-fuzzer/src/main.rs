@@ -8,8 +8,8 @@ use frame_support::{
     weights::{constants::WEIGHT_REF_TIME_PER_SECOND, Weight},
 };
 use parachain_template_runtime::{
-    AllPalletsWithSystem, Balance, Balances, BlockNumber, Executive, Runtime, RuntimeCall,
-    RuntimeOrigin, SudoConfig, UncheckedExtrinsic, SLOT_DURATION,
+    constants::SLOT_DURATION, AllPalletsWithSystem, Balance, Balances, BlockNumber, Executive,
+    Runtime, RuntimeCall, RuntimeOrigin, SudoConfig, UncheckedExtrinsic,
 };
 use parachains_common::AccountId;
 use sp_consensus_aura::AURA_ENGINE_ID;
@@ -61,6 +61,7 @@ fn main() {
             assets: Default::default(),
             transaction_payment: Default::default(),
             sudo: SudoConfig { key: Some(root) },
+            treasury: Default::default(),
         }
         .build_storage()
         .unwrap()

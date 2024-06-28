@@ -1,4 +1,4 @@
-/target/
+**/target/
 /.idea
 .DS_Store
 .thumbs.db
@@ -19,3 +19,8 @@ venv.bak/
 # Documentation
 docs/node_modules
 docs/build
+
+# zombienet stuff
+**/zombienet-macos
+**/zombienet-linux-x64
+**/bin-*
